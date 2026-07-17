@@ -1,0 +1,15 @@
+html {
+  scroll-behavior: smooth;
+}
+
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+}
+
+select option {
+  background: #0d1325;
+  color: white;
+}
