@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 
 import API from "../api/axios";
+import { Link } from "react-router-dom";
 
 const extractBookings = (response) => {
   const body = response?.data;
@@ -390,25 +391,19 @@ const MyBookings = () => {
                       </span>
 
                       <div className="booking-total">
-                        <IndianRupee
-                          size={18}
-                        />
-
+                        <IndianRupee size={18} />
                         <div>
-                          <small>
-                            Total
-                          </small>
-
-                          <strong>
-                            ₹
-                            {Number(
-                              total || 0
-                            ).toLocaleString(
-                              "en-IN"
-                            )}
-                          </strong>
+                          <small>Total</small>
+                          <strong>₹{Number(total || 0).toLocaleString("en-IN")}</strong>
                         </div>
                       </div>
+
+                      {String(status).toUpperCase() !== "CANCELLED" &&
+                        String(status).toUpperCase() !== "REJECTED" && (
+                          <Link to={`/pay/${id}`} className="booking-pay-button">
+                            Pay Now
+                          </Link>
+                        )}
                     </div>
                   </article>
                 );

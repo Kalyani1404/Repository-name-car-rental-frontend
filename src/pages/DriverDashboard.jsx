@@ -50,8 +50,9 @@ function DriverDashboard() {
     if (!navigator.geolocation) return setError("Location is not supported by this browser.");
     navigator.geolocation.getCurrentPosition(async ({ coords }) => {
       try {
-        await API.patch(`/driver/location?latitude=${coords.latitude}&longitude=${coords.longitude}`);
-        setMessage("Live location updated.");
+        const response = await API.patch(`/driver/location?latitude=${coords.latitude}&longitude=${coords.longitude}`);
+        setProfile(response.data?.data || profile);
+        setMessage("Live location updated successfully.");
       } catch (requestError) { setError(requestError.response?.data?.message || "Unable to update location."); }
     }, () => setError("Location permission was denied."));
   };
@@ -94,6 +95,11 @@ function DriverDashboard() {
               <div className="workspace-card-head"><div><Navigation size={21} /><h2>Live operations</h2></div></div>
               <p className="card-description">Share your current position when online so future trip-assignment services can locate you.</p>
               <button className="secondary-action full-width" onClick={shareLocation}><MapPin size={18} /> Update live location</button>
+              <div className="driver-location-box">
+                <p><span>Latitude: </span><strong>{profile.latitude ?? "Not shared"}</strong></p>
+                <p><span>Longitude: </span><strong>{profile.longitude ?? "Not shared"}</strong></p>
+                <p><span>Status: </span><strong>{profile.online ? "Online - available for future requests" : "Offline"}</strong></p>
+              </div>
             </section>
           </div>
         </>

@@ -31,6 +31,7 @@ function Login() {
     login,
     isLoggedIn,
     isAdmin,
+    isDriver,
   } = useAuth();
 
   const navigate = useNavigate();
@@ -57,7 +58,9 @@ function Login() {
         to={
           isAdmin
             ? "/admin"
-            : "/cars"
+            : isDriver
+              ? "/driver"
+              : "/cars"
         }
         replace
       />
@@ -94,10 +97,11 @@ function Login() {
         );
 
       navigate(
-        loggedInUser.role ===
-          "ADMIN"
+        loggedInUser.role === "ADMIN"
           ? "/admin"
-          : "/cars",
+          : loggedInUser.role === "DRIVER"
+            ? "/driver"
+            : "/cars",
         {
           replace: true,
         }
@@ -402,6 +406,10 @@ function Login() {
                 Create an account
               </button>
             </div>
+
+            <p className="login-driver-link">
+              Want to drive with RentRide? <button type="button" onClick={() => navigate("/driver-register")}>Register as a driver</button>
+            </p>
 
             <p className="login-security-note">
               Your account is protected

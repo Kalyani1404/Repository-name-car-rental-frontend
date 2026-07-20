@@ -6,6 +6,7 @@ import {
   ChevronDown,
   Gauge,
   HeartHandshake,
+  CreditCard,
   LayoutDashboard,
   LogOut,
   Menu,
@@ -16,6 +17,7 @@ import {
 } from "lucide-react";
 import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import API from "../api/axios";
 
 const getDisplayName = (user) =>
   user?.fullName?.trim() ||
@@ -38,11 +40,35 @@ function Navbar() {
   const profileRef = useRef(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
 
   useEffect(() => {
     setMobileMenuOpen(false);
     setProfileOpen(false);
   }, [location.pathname]);
+
+  useEffect(() => {
+    if (!isLoggedIn) return undefined;
+
+    let active = true;
+
+    const loadUnreadCount = async () => {
+      try {
+        const response = await API.get("/notifications/unread-count");
+        if (active) setUnreadCount(Number(response.data?.data || 0));
+      } catch (error) {
+        if (active) setUnreadCount(0);
+      }
+    };
+
+    loadUnreadCount();
+    const intervalId = window.setInterval(loadUnreadCount, 30000);
+
+    return () => {
+      active = false;
+      window.clearInterval(intervalId);
+    };
+  }, [isLoggedIn, location.pathname]);
 
   useEffect(() => {
     const closeProfile = (event) => {
@@ -76,7 +102,11 @@ function Navbar() {
           {!isDriver && <NavLink to="/my-bookings"><CalendarDays size={17} /> My Bookings</NavLink>}
           {isDriver && <NavLink to="/driver"><LayoutDashboard size={17} /> Driver Center</NavLink>}
 
-          <NavLink to="/notifications"><Bell size={17} /> Notifications</NavLink>
+          <NavLink to="/notifications" className="notification-nav-link">
+            <Bell size={17} /> Notifications
+            {unreadCount > 0 && <span className="nav-notification-count">{unreadCount > 99 ? "99+" : unreadCount}</span>}
+          </NavLink>
+          {!isDriver && <NavLink to="/payments"><CreditCard size={17} /> Payments</NavLink>}
           <NavLink to="/safety"><HeartHandshake size={17} /> Safety</NavLink>
 
           {isAdmin && (
