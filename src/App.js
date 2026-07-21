@@ -1,6 +1,15 @@
 import React from "react";
-import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
-import { AuthProvider } from "./context/AuthContext";
+
+import {
+  BrowserRouter,
+  Navigate,
+  Route,
+  Routes,
+} from "react-router-dom";
+
+import {
+  AuthProvider,
+} from "./context/AuthContext";
 
 import Navbar from "./components/Navbar";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -22,48 +31,188 @@ import Notifications from "./pages/Notifications";
 import SafetyCenter from "./pages/SafetyCenter";
 import AdminOperations from "./pages/AdminOperations";
 import Payments from "./pages/Payments";
+import OAuthSuccess from "./pages/OAuthSuccess";
+
 import "./App.css";
 
-const protectedPage = (page) => <ProtectedRoute>{page}</ProtectedRoute>;
+const protectedPage = (
+  page
+) => (
+  <ProtectedRoute>
+    {page}
+  </ProtectedRoute>
+);
 
 function AppContent() {
+
   return (
     <>
       <Navbar />
+
       <Routes>
-        <Route path="/" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/driver-register" element={<DriverRegister />} />
-        <Route path="/login" element={<Navigate to="/" replace />} />
 
-        <Route path="/cars" element={protectedPage(<UserDashboard />)} />
-        <Route path="/cars/:id" element={protectedPage(<CarDetails />)} />
-        <Route path="/book/:id" element={protectedPage(<BookingPage />)} />
-        <Route path="/my-bookings" element={protectedPage(<MyBookings />)} />
-        <Route path="/profile" element={protectedPage(<Profile />)} />
-        <Route path="/notifications" element={protectedPage(<Notifications />)} />
-        <Route path="/payments" element={protectedPage(<Payments />)} />
-        <Route path="/pay/:bookingId" element={protectedPage(<Payments />)} />
-        <Route path="/safety" element={protectedPage(<SafetyCenter />)} />
+        <Route
+          path="/"
+          element={<Login />}
+        />
 
-        <Route path="/driver" element={<DriverRoute><DriverDashboard /></DriverRoute>} />
+        <Route
+          path="/login"
+          element={
+            <Navigate
+              to="/"
+              replace
+            />
+          }
+        />
 
-        <Route path="/admin" element={<AdminRoute><OwnerDashboard /></AdminRoute>} />
-        <Route path="/admin/add-car" element={<AdminRoute><AddCar /></AdminRoute>} />
-        <Route path="/admin/operations" element={<AdminRoute><AdminOperations /></AdminRoute>} />
+        <Route
+          path="/register"
+          element={
+            <Register />
+          }
+        />
 
-        <Route path="*" element={<Navigate to="/" replace />} />
+        <Route
+          path="/driver-register"
+          element={
+            <DriverRegister />
+          }
+        />
+
+        {/* Google OAuth callback */}
+        <Route
+          path="/oauth-success"
+          element={
+            <OAuthSuccess />
+          }
+        />
+
+        <Route
+          path="/cars"
+          element={protectedPage(
+            <UserDashboard />
+          )}
+        />
+
+        <Route
+          path="/cars/:id"
+          element={protectedPage(
+            <CarDetails />
+          )}
+        />
+
+        <Route
+          path="/book/:id"
+          element={protectedPage(
+            <BookingPage />
+          )}
+        />
+
+        <Route
+          path="/my-bookings"
+          element={protectedPage(
+            <MyBookings />
+          )}
+        />
+
+        <Route
+          path="/profile"
+          element={protectedPage(
+            <Profile />
+          )}
+        />
+
+        <Route
+          path="/notifications"
+          element={protectedPage(
+            <Notifications />
+          )}
+        />
+
+        <Route
+          path="/payments"
+          element={protectedPage(
+            <Payments />
+          )}
+        />
+
+        <Route
+          path="/pay/:bookingId"
+          element={protectedPage(
+            <Payments />
+          )}
+        />
+
+        <Route
+          path="/safety"
+          element={protectedPage(
+            <SafetyCenter />
+          )}
+        />
+
+        <Route
+          path="/driver"
+          element={
+            <DriverRoute>
+              <DriverDashboard />
+            </DriverRoute>
+          }
+        />
+
+        <Route
+          path="/admin"
+          element={
+            <AdminRoute>
+              <OwnerDashboard />
+            </AdminRoute>
+          }
+        />
+
+        <Route
+          path="/admin/add-car"
+          element={
+            <AdminRoute>
+              <AddCar />
+            </AdminRoute>
+          }
+        />
+
+        <Route
+          path="/admin/operations"
+          element={
+            <AdminRoute>
+              <AdminOperations />
+            </AdminRoute>
+          }
+        />
+
+        <Route
+          path="*"
+          element={
+            <Navigate
+              to="/"
+              replace
+            />
+          }
+        />
+
       </Routes>
     </>
   );
 }
 
 function App() {
+
   return (
     <BrowserRouter>
+
       <AuthProvider>
+
         <AppContent />
+
       </AuthProvider>
+
     </BrowserRouter>
   );
 }

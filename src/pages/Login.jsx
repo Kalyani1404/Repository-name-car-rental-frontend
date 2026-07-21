@@ -29,6 +29,7 @@ const LOGIN_CAR_IMAGE =
 function Login() {
   const {
     login,
+    googleLogin,
     isLoggedIn,
     isAdmin,
     isDriver,
@@ -47,6 +48,9 @@ function Login() {
   ] = useState(false);
 
   const [loading, setLoading] =
+    useState(false);
+
+  const [googleLoading, setGoogleLoading] =
     useState(false);
 
   const [error, setError] =
@@ -115,6 +119,27 @@ function Login() {
       );
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleGoogleLogin = () => {
+    try {
+      setError("");
+      setGoogleLoading(true);
+
+      googleLogin();
+    } catch (googleError) {
+      console.error(
+        "Unable to start Google login:",
+        googleError
+      );
+
+      setError(
+        googleError.message ||
+          "Unable to start Google login."
+      );
+
+      setGoogleLoading(false);
     }
   };
 
@@ -227,7 +252,9 @@ function Login() {
               Secure account access
             </span>
 
-            <h2>Welcome back</h2>
+            <h2>
+              Welcome back
+            </h2>
 
             <p className="login-form-subtitle">
               Sign in to search cars
@@ -314,7 +341,10 @@ function Login() {
               <button
                 type="submit"
                 className="login-submit"
-                disabled={loading}
+                disabled={
+                  loading ||
+                  googleLoading
+                }
               >
                 {loading
                   ? "Signing in..."
@@ -328,6 +358,136 @@ function Login() {
               </button>
             </form>
 
+            {/* Google Login Divider */}
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "12px",
+                margin: "22px 0",
+              }}
+            >
+              <span
+                style={{
+                  height: "1px",
+                  flex: 1,
+                  background:
+                    "#e2e8f0",
+                }}
+              />
+
+              <span
+                style={{
+                  color: "#64748b",
+                  fontSize: "13px",
+                  fontWeight: "600",
+                }}
+              >
+                OR
+              </span>
+
+              <span
+                style={{
+                  height: "1px",
+                  flex: 1,
+                  background:
+                    "#e2e8f0",
+                }}
+              />
+            </div>
+
+            {/* Google Login Button */}
+            <button
+              type="button"
+              onClick={
+                handleGoogleLogin
+              }
+              disabled={
+                loading ||
+                googleLoading
+              }
+              style={{
+                width: "100%",
+                minHeight: "52px",
+                padding: "13px 20px",
+                border:
+                  "1px solid #d1d5db",
+                borderRadius: "12px",
+                backgroundColor:
+                  "#ffffff",
+                color: "#1f2937",
+                fontSize: "15px",
+                fontWeight: "700",
+                fontFamily: "inherit",
+                cursor:
+                  loading ||
+                  googleLoading
+                    ? "not-allowed"
+                    : "pointer",
+                display: "flex",
+                alignItems: "center",
+                justifyContent:
+                  "center",
+                gap: "10px",
+                boxSizing:
+                  "border-box",
+                transition:
+                  "all 0.25s ease",
+                opacity:
+                  loading ||
+                  googleLoading
+                    ? 0.7
+                    : 1,
+              }}
+              onMouseEnter={(
+                event
+              ) => {
+                if (
+                  !loading &&
+                  !googleLoading
+                ) {
+                  event.currentTarget.style.backgroundColor =
+                    "#f8fafc";
+
+                  event.currentTarget.style.transform =
+                    "translateY(-2px)";
+                }
+              }}
+              onMouseLeave={(
+                event
+              ) => {
+                event.currentTarget.style.backgroundColor =
+                  "#ffffff";
+
+                event.currentTarget.style.transform =
+                  "translateY(0)";
+              }}
+            >
+              <span
+                style={{
+                  width: "24px",
+                  height: "24px",
+                  borderRadius: "50%",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent:
+                    "center",
+                  fontSize: "20px",
+                  fontWeight: "800",
+                  color: "#4285F4",
+                  backgroundColor:
+                    "#ffffff",
+                }}
+              >
+                G
+              </span>
+
+              {googleLoading
+                ? "Opening Google..."
+                : "Continue with Google"}
+            </button>
+
+            {/* Register Section */}
             <div
               style={{
                 width: "100%",
@@ -351,7 +511,9 @@ function Login() {
               <button
                 type="button"
                 onClick={() =>
-                  navigate("/register")
+                  navigate(
+                    "/register"
+                  )
                 }
                 style={{
                   width: "100%",
@@ -402,13 +564,28 @@ function Login() {
                     "translateY(0)";
                 }}
               >
-                <UserPlus size={18} />
+                <UserPlus
+                  size={18}
+                />
+
                 Create an account
               </button>
             </div>
 
             <p className="login-driver-link">
-              Want to drive with RentRide? <button type="button" onClick={() => navigate("/driver-register")}>Register as a driver</button>
+              Want to drive with
+              RentRide?{" "}
+
+              <button
+                type="button"
+                onClick={() =>
+                  navigate(
+                    "/driver-register"
+                  )
+                }
+              >
+                Register as a driver
+              </button>
             </p>
 
             <p className="login-security-note">
